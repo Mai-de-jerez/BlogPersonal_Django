@@ -1,0 +1,34 @@
+{# este trozo es para todo lo que viene debajo del post #}
+<h2 class="entry-title">
+   
+{% if is_linked %}
+    <a href="{% url 'posts:post_detail' post.slug %}" title="{{ post.title }}">
+{% endif %}
+    {{ post.title }}
+{% if is_linked %}
+    </a>
+{% endif %}
+</h2>
+<ul class="meta top">
+     <li class="time">
+        <a href="{% url 'posts:posts_by_date' post.published.year post.published.month post.published.day %}">
+            <time class="post-date updated" datetime="{{ post.published|date:'Y-m-d'}}">{{ post.published|date:"F d, Y" }}</time>
+        </a>
+    </li>
+
+    <li class="comments post-tags">
+            <a href="{% url 'posts:comment_list' slug=post.slug %}">
+            {{ post.comments.count }} Comentarios
+            </a>
+    </li>
+
+    <li class="author-m post-tags">
+        Por <span class="vcard author post-author">
+            <span class="fn">
+                <a href="{% url 'posts:author_posts' post.author.username %}">
+                    {{ post.author.get_full_name|default:post.author.username }}
+                </a>
+            </span>
+        </span>
+    </li>
+</ul>

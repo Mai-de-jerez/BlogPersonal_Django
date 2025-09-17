@@ -1,0 +1,27 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="comments-wrapper">
+    <div id="comments" class="inner">
+        <div id="respond" class="comment-respond">
+            <h3 id="reply-title" class="comment-reply-title">Editar comentario</h3>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <p>Tu email no será visible al público. Campos obligatorios <span class="required">*</span></p>
+
+                    {{ form.as_p }}
+
+                    <p class="form-submit">
+                        <button type="submit" class="submit">Guardar cambios</button>&nbsp;&nbsp;
+                      
+                        <button type="button" onclick="window.location.href='{% url 'posts:post_detail' object.post.slug %}'">
+                            Cancelar
+                        </button>
+                    
+                    </p>
+                </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,28 @@
+{% extends "core/base.html" %}
+{% block title %}Categorías{% endblock %}
+{% load static %}
+{% block content %}
+   
+<section class="main">
+    <article class="post page">
+        <div class="inner">
+            <h1>Categorías</h1>
+            <div class="post-content">        
+                <div class="bullets tick black">  
+                    <ul>
+                        {% for category in categories %}
+                            <li>
+                                <a href="{% url 'posts:category_posts' category_name=category.name %}">
+                                    {{ category.name }}
+                                </a>
+                            </li>
+                        {% empty %}
+                            <li>No hay categorías disponibles.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </article>
+</section>
+{% endblock %}

@@ -1,0 +1,23 @@
+{# Este archivo solo se encarga del carrusel. El enlace a post_detail se gestiona en la plantilla que lo incluye. #}
+{% if is_linked %}
+    <a href="{% url 'posts:post_detail' post.slug %}" title="{{ post.title }}">
+{% endif %}
+    <div class="part-gallery">
+        <div class="flexslider">
+            <ul class="slides">
+                {# Itera sobre las imágenes de la galería del post #}
+                {% for img in post.gallery_images.all %}
+                    <li>
+                        <span class="post-image">
+                            {# La fuente de la imagen ahora es dinámica desde el modelo #}
+                            <img src="{{ img.image.url }}" alt="{{ img.caption|default:post.title }}"/>
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% if is_linked %}
+    </a>
+{% endif %}
+

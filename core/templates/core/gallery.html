@@ -1,0 +1,53 @@
+{# gallery.html #}
+{% extends "core/base.html" %}
+{% block title %}Gallery{% endblock %}
+{% load static %}
+{% block extra %}
+<div class="home-sticky" id="content">
+
+    <h2 class="home-sticky-title">Galería de imágenes</h2>
+
+    <div class="sticky-inner">
+        {% if featured_gallery_posts %} 
+                {% for post in featured_gallery_posts %}
+                    {% if post.gallery_images.first %} {# Asegura que existe al menos una imagen en la galería del post #}
+                        {% with current_display_image=post.gallery_images.first.image %}
+                            <aside style="display:flex; flex-direction:column; align-items:center;" class="home-sticky-post post has-post-thumbnail sticky">
+                                    <span class="estilo-personal">
+                                        <a href="{% url 'posts:post_detail' post.slug %}"> 
+                                            <img src="{{ current_display_image.url }}"
+                                                class="attachment-sticky size-sticky" alt="{{ post.title }}"/>
+                                        </a>
+                                    </span>
+
+                                    <div class="inner">
+                                        <h3 class="entry-title">
+                                            <a href="{% url 'posts:post_detail' post.slug %}">{{ post.title }}</a>
+                                        </h3>
+
+                                        <ul class="meta top">
+                                            <li class="time">
+                                                <a href="{% url 'posts:posts_by_date' post.published.year post.published.month post.published.day %}">
+                                                    <time class="post-date updated" datetime="{{ post.published|date:'Y-m-d' }}">
+                                                        {{ post.published|date:"F d, Y" }}
+                                                    </time>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                            </aside>
+                        {% endwith %}
+                    {% endif %} {# Fin del if post.gallery_images.first #}
+                {% endfor %}
+            {% else %}
+                {# Mensaje si no hay posts visuales para mostrar en la galería destacada #}
+                <p style="text-align: center; width: 100%;">No hay posts destacados en la galería aún.</p>
+            {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block content %}{% endblock %}
+{% block extra_2 %}{% endblock %}
+
+
+

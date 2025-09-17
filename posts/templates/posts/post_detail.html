@@ -1,0 +1,195 @@
+{% extends "core/base.html" %}
+{% block title %}Detail Post{% endblock %}
+{% block content %}
+{% load static %}
+        <section class="main">
+            <article class="post
+                {% if post.media_type != 'none' %}
+                    format-{{ post.media_type }} post_format-post-format-{{ post.media_type }}
+                {% endif %}
+
+                {% if post.media_type == 'video' and post.video_embed_url %}has-post-thumbnail                
+                {% elif post.media_type == 'none' and post.url_externa %}format-link has-post-thumbnail post_format-post-format-link
+                {% endif %}
+                ">
+
+                {% if post.media_type == 'single_image' and post.gallery_images.exists %}
+                    {% include 'posts/includes/_media_image.html' with post=post is_linked=False %}
+                {% elif post.media_type == 'gallery' and post.has_gallery_images %}
+                    {% include 'posts/includes/_media_gallery.html' with post=post is_linked=False %}
+                {% elif post.media_type == 'video' and post.video_embed_url %}
+                    {% include 'posts/includes/_media_video.html' with post=post %}
+                {% endif %}
+
+
+                <div class="inner">
+                    {% include 'posts/includes/_post_header_meta.html' with post=post is_linked=False %}
+
+                    {% if post.content %}
+                        <div class="post-content"><p>{{ post.content|safe }}</p></div>
+                    {% endif %}
+
+                    {% if post.url_externa %}
+                        <div class="part-link">
+                            <a class="more-link" href="{{ post.url_externa }}" title="{{ post.title }}" target="_blank">
+                                Visit Website
+                            </a>
+                        </div>
+                    {% endif %}
+
+
+                    <ul class="meta bottom">
+                        <li class="cat post-tags">
+                            Categoría:
+                            {% for category in post.categories.all %}
+                                <a href="{% url 'posts:category_posts' category.name %}">{{ category.name }}</a>{% if not forloop.last %},{% endif %}
+                            {% empty %}
+                                Blog 
+                            {% endfor %}
+                        </li>
+                    </ul>
+                </div>
+            </article>
+
+            <nav class="pagination">
+                <ul>
+                    <li class="older-posts">
+                        {% if prev_post %} {# Si existe un post anterior #}
+                            <span><a href="{% url 'posts:post_detail' prev_post.slug %}" rel="prev">
+                                <i class="fa fa-chevron-left"></i> <span class="i">Prev</span>
+                            </a></span>
+                        {% else %} {# Si no hay post anterior, lo marcamos como inactivo #}
+                            <span class="inactive"><i class="fa fa-chevron-left"></i> <span class="i">Prev</span></span>
+                        {% endif %}
+                    </li>
+
+                    <li class="share-link">
+                        {# Este enlace de compartir es típicamente JavaScript. Por ahora lo dejamos como está o apunte a un ancla si tienes una sección de compartir. #}
+                        <a href="#share"><i class="fa fa-share-alt"></i><span class="i">Share</span></a>
+                    </li>
+
+                    <li class="newer-posts">
+                        {% if next_post %} {# Si existe un post siguiente #}
+                            <span><a href="{% url 'posts:post_detail' next_post.slug %}" rel="next">
+                                <span class="i">Next</span> <i class="fa fa-chevron-right"></i>
+                            </a></span>
+                        {% else %} {# Si no hay post siguiente, lo marcamos como inactivo #}
+                            <span class="inactive"><span class="i">Next</span> <i class="fa fa-chevron-right"></i></span>
+                        {% endif %}
+                    </li>
+                </ul>
+            </nav>
+
+            <aside class="author-wrap">
+                <span class="author-avatar"><img alt="" src="{% static 'core/images/about-me.png' %}" class="avatar avatar-200 photo" height="200" width="200"></span>
+                <div class="author-bio">
+                    <h4><a href="{% url 'about' %}">Mai</a></h4>
+                    <p>Hola, mi nombre es Mai y he creado este blog para mostrarte los encantos y misterios del mundo esotérico, el cuál es muy profundo y está estrechamente relacionado con el mundo de los sueños, de ahí el nombre del blog. ¿Estás listo para despertar?</p>
+                    <div class="author-socials-wrap">
+
+                        <a class="author-socials" href="https://x.com/Mai_de_Jerez" target="_blank"><i class="fa fa-twitter"></i><span>Twitter</span></a>
+                        <a class="author-socials" href="https://www.facebook.com/profile.php?id=1551265506" target="_blank"><i class="fa fa-facebook"></i><span>Facebook</span></a>
+                        <a class="author-socials" href="https://www.instagram.com/mai_de_jerez/" target="_blank"><i class="fa fa-instagram"></i><span>Instagram</span></a>
+                        <a class="author-socials" href="https://es.pinterest.com/mainen1985/_profile" target="_blank"><i class="fa fa-pinterest"></i><span>Pinterest</span></a>
+                        <a class="author-socials" href="https://github.com/Mai-de-jerez" target="_blank"><i class="fa fa-link"></i><span>Website</span></a>
+
+                    </div>
+                </div>
+
+            </aside>
+
+            <div class="related-posts">
+                <h5>Posts Relacionados</h5>
+                <div class="posts">
+                    {% for related_post in related_posts %}
+                        {# Intentamos obtener la primera imagen de la galería de este post relacionado #}
+                        {% with thumbnail_image=related_post.gallery_images.first %}
+
+                        {# La clase 'has-post-thumbnail' se aplica si hay una miniatura o una URL de vídeo #}
+                        <aside style="display:flex; flex-direction:column; align-items:center;" class="related post {% if thumbnail_image or related_post.video_embed_url %}has-post-thumbnail{% endif %}">
+                            <span class="post-image">
+                                {# 1. ¿Tiene el post una imagen real en su galería? (ya sea 'single_image' o 'gallery') #}
+                                {% if thumbnail_image and thumbnail_image.image %}
+                                    <a href="{% url 'posts:post_detail' related_post.slug %}" title="{{ related_post.title }}">
+                                        <img src="{{ thumbnail_image.image.url }}" alt="{{ related_post.title }}">
+                                    </a>
+                                {# 2. Si NO tiene imagen de galería, ¿es un video y tiene URL de incrustación? #}
+                                {% elif related_post.media_type == 'video' and related_post.video_embed_url %}
+                                    <a href="{% url 'posts:post_detail' related_post.slug %}" title="{{ related_post.title }}">
+                                        
+                                        <img src="{% static 'core/images/video.jpg' %}" alt="Vídeo"> 
+                                    </a>
+                                {# 3. Si no cumple ninguna de las anteriores (no tiene imagen, no es vídeo, o es vídeo sin URL) #}
+                                {% else %}
+                                    <a href="{% url 'posts:post_detail' related_post.slug %}" title="{{ related_post.title }}">
+                                        {# Usa el nombre de tu imagen de placeholder para cuando no hay foto #}
+                                        <img src="{% static 'core/images/sin-imagen.jpg' %}" alt="Imagen por Defecto">
+                                    </a>
+                                {% endif %}
+                            </span>
+
+                            <div class="inner">
+                                <h6 class="entry-title">
+                                    <a href="{% url 'posts:post_detail' related_post.slug %}" title="{{ related_post.title }}">
+                                        {{ related_post.title }}
+                                    </a>
+                                    <ul class="meta top">
+                                        <li class="time">
+                                            <a href="{% url 'posts:posts_by_date' post.published.year post.published.month post.published.day %}">
+                                                <time class="post-date updated" datetime="{{ post.published|date:'Y-m-d' }}">
+                                                    {{ post.published|date:"F d, Y" }}
+                                                </time>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </h6>
+                            </div>
+                        </aside>
+                        {% endwith %} {# Cierra el with para thumbnail_image #}
+                    {% empty %}
+                        <p>No hay posts relacionados disponibles.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {# Sección de comentarios #}
+        {% include 'comments/includes/_comments_section.html' with post=post comments=comments form=form %}         
+        </section>
+{% endblock %}
+{% block extra_footer %}
+<div class="share-overlay">
+
+    <div class="share-inner">
+
+        <span class="share-label">Share: </span>
+        <ul class="meta sharer" id="share">
+            <li class="share-on">
+                <a target="_blank"
+                title="{{ post.title }}"
+                href="https://twitter.com/share?text={{ post.title }}&amp;url={{ request.build_absolute_uri }}"
+                onclick="window.open(this.href, 'twitter', 'width=450,height=300,left=' + (screen.availWidth / 2 - 375) + ',top=' + (screen.availHeight / 2 - 150) + ''); return false;"
+                class="twitter">
+                    <i class="fa fa-twitter"></i><span>Twitter</span>
+                </a>
+            </li>
+            <li class="share-on">
+                <a href="http://pinterest.com/pin/create/button/?url={{ request.build_absolute_uri }}&amp;description={{ post.title }}"
+                target="_blank" class="pinterest offblack">
+                    <i class="fa fa-pinterest"></i><span>Pinterest</span>
+                </a>
+            </li>
+            <li class="share-on">
+                <a target="_blank"
+                title="{{ post.title }}"
+                href="http://www.facebook.com/share.php?u={{ request.build_absolute_uri }}"
+                onclick="window.open(this.href, 'facebook', 'width=450,height=300,left=' + (screen.availWidth / 2 - 375) + ',top=' + (screen.availHeight / 2 - 150) + ''); return false;"
+                class="facebook">
+                    <i class="fa fa-facebook"></i><span>Facebook</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'core/js/comments.js' %}"></script>
+{% endblock %}

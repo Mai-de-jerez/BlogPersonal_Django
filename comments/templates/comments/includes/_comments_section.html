@@ -1,0 +1,46 @@
+{% load static %}
+<div class="comments-wrapper">
+    <div id="comments" class="inner">
+        <div class="comments-inner">
+            <h3 id="respond-title">Comentarios ({{ post.comments.count }})</h3><br>
+        </div>
+
+        <aside class="comments">
+            <ul class="commentlist">
+                {% for comment in comments %}
+                    {% include "comments/includes/comment_item.html" with comment=comment %}
+                {% empty %}
+                    <p>No hay comentarios aún. ¡Sé el primero en comentar!</p>
+                {% endfor %}
+                <br>
+                <a class="button small red" href="{% url 'posts:comment_list' slug=post.slug %}">Ver todos</a>
+            </ul>
+        </aside>
+
+        <div id="respond" class="comment-respond">
+            <h3 id="reply-title" class="comment-reply-title">Dejar un comentario</h3>
+            <form method="post" action="{% url 'comments:add_comment' post.id %}">
+                {% csrf_token %}
+                <p>Tu email no será visible al público. Campos obligatorios. <span class="required">*</span></p>
+                <p>
+                    <label for="{{ form.text.id_for_label }}">Comment</label>
+                    {{ form.text }}
+                </p>
+                <p class="comment-form-author">
+                    <label class="hidden" for="{{ form.name.id_for_label }}">Name</label>
+                    <span class="required hidden">*</span>
+                    {{ form.name }}
+                </p>
+                <p>
+                    <label for="{{ form.email.id_for_label }}">Email</label>
+                    <span class="required ">*</span>
+                    {{ form.email }}
+                </p>
+                <p class="form-submit">
+                    <input name="submit" type="submit" id="submit" class="submit" value="Comentar">
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+{% block extra_js %}{% endblock %}

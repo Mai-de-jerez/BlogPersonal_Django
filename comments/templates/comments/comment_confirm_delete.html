@@ -1,0 +1,20 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="comments-wrapper">
+    <div id="comments" class="inner">
+        <div id="respond" class="comment-respond">
+          <h2>¿Estás seguro de que quieres borrar el comentario de {{ comment.name }}?</h2>
+          <p>{{ object.text|linebreaks }}</p>
+            <form method="post">
+              {% csrf_token %}
+              <button type="submit">Sí, borrar</button>
+              <button type="button" onclick="window.location.href='{% url 'posts:post_detail' object.post.slug %}'">
+                  Cancelar
+              </button>
+       
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

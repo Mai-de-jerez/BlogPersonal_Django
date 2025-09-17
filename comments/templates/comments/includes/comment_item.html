@@ -1,0 +1,40 @@
+{# comments/templates/comments/includes/commment_item.html #}
+{% load static %}
+
+<li class="comment even thread-even depth-1" id="comment-{{ comment.pk }}">
+    <div class="author-avatar">
+        {% if comment.author %}
+            <img alt="{{ comment.author.username }}'s avatar" src="{% static 'core/images/no-avatar.jpg' %}" class="avatar avatar-50 photo" height="50" width="50">
+        {% else %}
+            <img alt="No avatar" src="{% static 'core/images/no-avatar.jpg' %}" class="avatar avatar-50 photo" height="50" width="50">
+        {% endif %}
+    </div>
+    <div class="comment-body">
+        <div class="author">
+            <h4 class="comment-author">
+                <span class="url">{{ comment.name }}</span>
+            </h4>
+            <span class="comment-date">{{ comment.created|date:"F d, Y" }}</span>
+
+            <div class="comment-content">
+                <p>{{ comment.text|safe|linebreaksbr }}</p>
+            </div>
+            
+            <div class="comment-buttons">
+                {% if request.user.is_authenticated %}
+                    <a href="#" data-comment-id="{{ comment.pk }}" class="reply-button">Responder |</a>&nbsp;
+                {% endif %}
+
+                {% if request.user.pk == comment.author.pk or request.user.is_superuser %}
+                    <a href="{% url 'comments:edit_comment' pk=comment.pk %}">Editar |</a>&nbsp;
+                    <a href="{% url 'comments:delete_comment' pk=comment.pk %}">Borrar |</a>&nbsp;
+                    <a href="{% url 'posts:comment_list' slug=comment.post.slug %}?respuestas={{ comment.pk }}">
+                        Ver respuestas ({{ comment.replies.count }})
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+      {% include "comments/includes/_reply_form.html" with post=comment.post reply_form=reply_form comment=comment %}
+  
+</div>
+</li>&nbsp;

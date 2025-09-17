@@ -1,0 +1,15 @@
+<div class="reply-form" style="display: none;">
+    <form method="post" action="{% url 'comments:add_comment' post.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="parent_id" class="parent-id-input" value="{{ comment.id }}">
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        {{ reply_form.text.label_tag }}
+        {{ reply_form.text }}
+        <a href="#" class="submit-reply">Enviar |</a>&nbsp;
+        <a href="#" class="cancel-reply">Cancelar</a>
+    </form>
+</div>
+
+
+    
+    

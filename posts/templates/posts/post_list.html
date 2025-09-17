@@ -1,0 +1,119 @@
+{% extends "core/base.html" %}
+{% block title %}Blog Personal{% endblock %}
+{% block extra %}{% endblock %}
+{% block content %}
+{% load static %}
+
+         <section class="main main-archive">
+
+            <article class="post result">
+                <div class="inner">
+                    {% if request.GET.s %}
+                        <h1 class="searching">Resultados</h1>
+                        <p>Buscando "{{ request.GET.s }}" en {{ request.GET.filter }}.</p>
+                    {% else %}
+                        <h1 class="searching">Blog</h1>
+                        <p>Puedes ver todos los posts aquí.</p>
+                    {% endif %}
+                </div>
+            </article>
+
+            <div class="loop">
+
+            {% for post in page_obj %}
+                <article class="post
+                    {% if post.media_type != 'none' %}
+                        format-{{ post.media_type }} post_format-post-format-{{ post.media_type }}
+                    {% endif %}
+
+                    {% if post.media_type == 'video' and post.video_embed_url %}has-post-thumbnail                
+                    {% elif post.media_type == 'none' and post.url_externa %}format-link has-post-thumbnail post_format-post-format-link
+                    {% endif %}
+                    ">
+                
+                    {% if post.media_type == 'single_image' and post.gallery_images.exists %}
+                        {% include 'posts/includes/_media_image.html' with post=post is_linked=True %}
+                    {% elif post.media_type == 'gallery' and post.has_gallery_images %}
+                        {% include 'posts/includes/_media_gallery.html' with post=post is_linked=True %}
+                    {% elif post.media_type == 'video' and post.video_embed_url %}
+                        {% include 'posts/includes/_media_video.html' with post=post is_linked=True %}
+                    {% endif %}
+
+                    <div class="inner">
+
+                        {% include 'posts/includes/_post_header_meta.html' with post=post is_linked=True %}
+                   
+                                
+                        {% if post.content %}
+                            <div class="post-content">
+                                {% if post.content|wordcount > 50 %}
+                                    <p>{{ post.content|safe|truncatewords:50 }}</p>
+                                    <a href="{% url 'posts:post_detail' post.slug %}" class="more-link">Leer más</a>
+                                {% else %}
+                                    <p>{{ post.content|safe }}</p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        {% if post.url_externa %}
+                            <div class="part-link">
+                                <a class="more-link" href="{{ post.url_externa }}" title="{{ post.title }}" target="_blank">
+                                    Visit Website
+                                </a>
+                            </div>
+                        {% endif %}
+                    
+                        <ul class="meta bottom">
+                            <li class="cat post-tags">
+                                Categoría:
+                                {% for category in post.categories.all %}
+                                    <a href="{% url 'posts:category_posts' category.name %}">{{ category.name }}</a>{% if not forloop.last %},{% endif %}
+                                {% empty %}
+                                    Blog 
+                                {% endfor %}
+                            </li>
+                        </ul>
+
+                    </div>
+                </article>              
+            {% endfor %}
+            </div>
+        </section>  
+{% endblock %}
+{% block extra_2 %}
+    <div class="custom-pagination mt-4 mb-4">
+        <ul>
+            {% if page_obj.has_previous %}
+                <li class="prev">
+                    <a href="?page={{ page_obj.previous_page_number }}&s={{ request.GET.s }}&filter={{ request.GET.filter }}">&laquo; Anterior</a>
+                </li>
+            {% else %}
+                <li class="prev disabled">
+                    <a href="#">&laquo; Anterior</a>
+                </li>
+            {% endif %}
+
+            {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <li class="active">
+                        <a href="#">{{ i }}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="?page={{ i }}&s={{ request.GET.s }}&filter={{ request.GET.filter }}">{{ i }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="next">
+                    <a href="?page={{ page_obj.next_page_number }}&s={{ request.GET.s }}&filter={{ request.GET.filter }}">Siguiente &raquo;</a>
+                </li>
+            {% else %}
+                <li class="next disabled">
+                    <a href="#">Siguiente &raquo;</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}

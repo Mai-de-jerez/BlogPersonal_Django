@@ -1,0 +1,209 @@
+<!doctype html>
+<!--
+	Itsy by FreeHTML5.co
+	Twitter: https://twitter.com/fh5co
+	Facebook: https://fb.com/fh5co
+	URL: https://freehtml5.co
+-->
+<html class="home blog no-js" lang="es">
+<head>
+    <title>El Sueño | {% block title %}{% endblock %} </title>
+
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    {% load static %}
+    <link rel="icon" type="image/x-icon" href="{% static 'core/images/favicon.ico' %}"> 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+          type="text/css" media="all"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC%3A400%2C700%7CLato%3A400%2C700%2C400italic%2C700italic&amp;ver=4.9.8"
+          type="text/css" media="screen"/>
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="{% static 'core/css/print.css' %}" type="text/css" media="print"/>
+    <!--[if (lt IE 9) & (!IEMobile)]>
+    <link rel="stylesheet" id="lt-ie9-css" href="ie.css" type="text/css" media="screen"/>
+    <![endif]-->
+    <script src="{% static 'core/js/jquery-3.0.0.min.js' %}"></script>
+    <script src="{% static 'core/js/jquery-migrate-3.0.1.min.js' %}"></script>
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="home sticky-menu sidebar-off" id="top">
+
+<header class="header">
+
+    <div class="header-wrap">
+
+        <div class="logo plain logo-left">
+            <div class="site-title">
+                <a href="{% url 'home' %}" title="Go to Home">El Sueño</a>
+            </div>
+        </div><!-- /logo -->
+
+
+        <nav id="nav" role="navigation">
+            <div class="table">
+                <div class="table-cell">
+                    <ul id="menu-menu-1">
+                        <li class="menu-item">
+                            <a href="{% url 'home' %}">Home</a></li>
+                        <li class="menu-item">
+                            <a href="{% url 'about' %}">Sobre mí</a></li>
+                        <li class="menu-item">
+                            <a href="{% url 'posts:category_list' %}">Categorías</a>
+                            <ul class="sub-menu">
+                                {% for category in categories_list %}
+                                    <li class="menu-item">
+                                        <a href="{% url 'posts:category_posts' category_name=category.name %}">{{ category.name }}</a>
+                                    </li>
+                                {% empty %}
+                                    <li class="menu-item">
+                                        <a href="#">No hay categorías disponibles</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{% url 'posts:posts_list' %}">Blog</a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{% url 'gallery' %}">Galería</a></li>
+                        <li class="menu-item">
+                            <a href="{% url 'contact' %}">Contacto</a></li>
+                        {% if request.user.is_staff %}
+                        <li class="menu-item">
+                            <a href="{% url 'admin:index' %}">Administrar</a></li>
+                        {% endif %}
+                        <li class="menu-inline menu-item">
+                            <a title="Twitter" href="http://twitter.com/">
+                                <i class="fa fa-twitter"></i><span class="i">Twitter</span>
+                            </a></li>
+                        <li class="menu-inline menu-item">
+                            <a title="Facebook" href="http://www.facebook.com/">
+                                <i class="fa fa-facebook"></i><span class="i">Facebook</span>
+                            </a></li>
+                        <li class="menu-inline menu-item">
+                            <a title="Flickr" href="https://www.flickr.com/"><i class="fa fa-flickr"></i><span class="i">Flickr</span></a>
+                        </li>
+                        <li class="menu-inline menu-item">
+                            <a title="Instagram" href="https://www.instagram.com/">
+                                <i class="fa fa-instagram"></i><span class="i">Instagram</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <a href="#nav" class="menu-trigger"><i class="fa fa-bars"></i></a>
+
+        <a href="#topsearch" class="search-trigger"><i class="fa fa-search"></i></a>
+
+    </div>
+
+</header>
+{% block extra %}{% endblock %}
+<div class="wrap full-wrap">
+    <div class="main-wrap">
+      {% block content %}{% endblock %}
+    </div><!-- /main-wrap -->
+</div><!-- /wrap -->
+
+<!-- Pagination -->
+{% block extra_2 %}{% endblock %}
+
+<!-- Footer Widgets -->
+<div class="footer-widgets widget-count-4">
+
+    <div class="wrap">
+
+        <div class="mt-about-you-widget">
+            <div class="widget footer">
+                <a href="{% url 'about' %}">
+                    <img class="mt-about-avatar" src="{% static 'core/images/about-me.png' %}" alt="Mai"/>
+                </a>
+                
+                <h4><a href="{% url 'about' %}">Mai</a></h4>
+
+                <div class="mt-about-bio">
+                    <p>Hola, mi nombre es Mai y he creado este blog para mostrarte los encantos y misterios del mundo esotérico, el cuál es muy profundo y está estrechamente relacionado con el mundo de los sueños, de ahí el nombre del blog. ¿Estás listo para despertar?</p>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="widget footer">
+            <h4><a href="{% url 'home' %}#recent-posts-section">Posts Recientes</a></h4>
+            <ul>
+                {% for post in latest_posts_list %}
+                <li>
+                    <a href="{% url 'posts:post_detail' post.slug %}">{{ post.title }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="widget footer">
+            <h4><a href="{% url 'posts:category_list' %}">Categorías</a></h4>
+            <ul>  
+                {% for category in categories_list %}
+                <li class="cat-item cat-item-{{ category.id }}">
+                    <a href="{% url 'posts:category_posts' category.name %}">{{ category.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="widget footer">
+            <h4><a href="{% url 'gallery' %}">Galería</a></h4>
+            <div class="textwidget">
+                <a href="{% url 'gallery' %}">
+                    <img src="{% static 'core/images/gallery.png' %}" alt="Ir a la galería">
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<footer class="footer">
+    <div class="footer-wrap">
+        <div id="footer-text">&copy; 2025 El Sueño.
+            Diseñado por <a href="https://github.com/Mai-de-jerez" target="_blank">María del Carmen Martín Rodríguez</a>.</div>
+
+        <a href="#top" id="btt">Subir <i class="fa fa-chevron-up"></i></a>
+    </div>
+</footer>
+
+{% block extra_footer %}{% endblock %}
+
+<div id="topsearch">
+    <div class="table">
+        <div class="table-cell">
+            <form role="search" method="get" class="searchform" action="{% url 'posts:posts_list' %}">
+                <div class="custom-search">
+                    <select name="filter">
+                        <option value="title">Título</option>
+                        <option value="author">Autor</option>
+                        <option value="category">Categoría</option>
+                    </select>
+                </div>
+                <div>
+                    <input type="text" value="" name="s" class="s" placeholder="Buscar..."/>
+                    <input type="submit" class="searchsubmit" value="Search"/>
+                </div>
+            </form>
+        </div>
+    </div>
+    <a href="#topsearch" class="search-trigger"><i class="fa fa-times"></i></a>
+</div>
+
+
+<script>var ie9 = false;</script>
+<!--[if lte IE 9 ]>
+<script> var ie9 = true; </script>
+<![endif]-->
+<script src="{% static 'core/js/global-plugins.min.js' %}"></script>
+<script src="{% static 'core/js/main.js' %}"></script>
+{% block extra_js %}
+{% endblock %}
+</body>
+</html>

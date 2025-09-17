@@ -1,0 +1,31 @@
+{# comments/templates/comments/includes/commment_parent.html #}
+{% load static %}
+<div class="comment-parent" style="
+    padding: 3em 1em 1em 1em; 
+    margin-bottom: 1em; 
+    border-left: 4px solid #ccc; 
+    background-color: #f9f9f9;
+">
+    <div style="display: flex; align-items: flex-start; gap: 1em;">
+        <div class="author-avatar">
+            {% if comment.author %}
+                <img alt="{{ comment.author.username }}'s avatar" src="{% static 'core/images/no-avatar.jpg' %}" class="avatar avatar-50 photo" height="50" width="50">
+            {% else %}
+                <img alt="No avatar" src="{% static 'core/images/no-avatar.jpg' %}" class="avatar avatar-50 photo" height="50" width="50">
+            {% endif %}
+        </div>
+        <div class="comment-body">
+            <div class="author">
+                <h4 class="comment-author">
+                    <span class="url">{{ parent_comment.name }}</span>
+                </h4>
+                <span class="comment-date">{{ parent_comment.created|date:"F d, Y" }}</span>
+
+                <div class="comment-content">
+                    <p>{{ parent_comment.text|safe|linebreaksbr }}</p>
+                </div>          
+            </div>  
+        </div>      
+    </div>
+</div>
+

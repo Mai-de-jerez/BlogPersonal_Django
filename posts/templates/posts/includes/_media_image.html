@@ -1,0 +1,14 @@
+{# templates/blog/includes/_media_image.html #}
+<span class="post-image">
+    {% if is_linked %}
+        <a href="{% url 'posts:post_detail' post.slug %}" title="{{ post.title }}">
+    {% endif %}
+    {% with first_image=post.gallery_images.first %}
+        <img width="916" height="611" src="{{ first_image.image.url }}"
+             class="attachment-desktop size-desktop" alt="{{ first_image.caption|default:post.title }}"/>
+    {% endwith %}
+    {% if is_linked %}
+        </a>
+    {% endif %}
+</span>
+    

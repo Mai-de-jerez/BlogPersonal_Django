@@ -1,0 +1,88 @@
+{% extends "core/base.html" %}
+{% block title %}Home{% endblock %}
+{% load static %}
+{% block extra %}
+<div class="hero" style="background-image: url('{% static 'core/images/bola-cristal.jpg' %}'); text-align:right;">
+    <div class="hero-inner">
+        <div class="inner">
+            <h1><span class="border border-top border-bottom">El sueño</span></h1>
+            <div class="hero-line-one"></div>
+            <div class="hero-line-two"><span class="border border-bottom"><a href="{% url 'about' %}" style="color:#FFF;">by Mai</a></span></div>
+        </div>
+        <a class="more-arrow" href="#content"><i class="fa fa-chevron-down"></i><span>Scroll Down</span></a>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<section class="main main-archive" id="recent-posts-section">
+
+            <article class="post result">
+                <div class="inner">
+                    <h1 class="searching">Blog</h1>
+                    <p>Entradas recientes</p>
+                </div>
+            </article>
+
+            <div class="loop">
+                {% for post in latest_posts_list %}
+                <article class="post
+                    {% if post.media_type != 'none' %}
+                        format-{{ post.media_type }} post_format-post-format-{{ post.media_type }}
+                    {% endif %}
+
+                    {% if post.media_type == 'video' and post.video_embed_url %}has-post-thumbnail                
+                    {% elif post.media_type == 'none' and post.url_externa %}format-link has-post-thumbnail post_format-post-format-link
+                    {% endif %}
+                    ">
+                
+                    {% if post.media_type == 'single_image' and post.gallery_images.exists %}
+                        {% include 'posts/includes/_media_image.html' with post=post is_linked=True %}
+                    {% elif post.media_type == 'gallery' and post.has_gallery_images %}
+                        {% include 'posts/includes/_media_gallery.html' with post=post is_linked=True %}
+                    {% elif post.media_type == 'video' and post.video_embed_url %}
+                        {% include 'posts/includes/_media_video.html' with post=post is_linked=True %}
+                    {% endif %}
+
+                    <div class="inner">
+
+                        {% include 'posts/includes/_post_header_meta.html' with post=post is_linked=True %}
+                   
+                                
+                        {% if post.content %}
+                            <div class="post-content">
+                                {% if post.content|wordcount > 50 %}
+                                    <p>{{ post.content|safe|truncatewords:50 }}</p>
+                                    <a href="{% url 'posts:post_detail' post.slug %}" class="more-link">Leer más</a>
+                                {% else %}
+                                    <p>{{ post.content|safe }}</p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        {% if post.url_externa %}
+                            <div class="part-link">
+                                <a class="more-link" href="{{ post.url_externa }}" title="{{ post.title }}" target="_blank">
+                                    Visit Website
+                                </a>
+                            </div>
+                        {% endif %}
+                    
+                        <ul class="meta bottom">
+                            <li class="cat post-tags">
+                                Categoría:
+                                {% for category in post.categories.all %}
+                                    <a href="{% url 'posts:category_posts' category.name %}">{{ category.name }}</a>{% if not forloop.last %},{% endif %}
+                                {% empty %}
+                                    Blog 
+                                {% endfor %}
+                            </li>
+                        </ul>
+                    </div>
+                </article> 
+                {% empty %}
+                        <p>No hay posts recientes disponibles.</p>
+                {% endfor %}             
+            </div>
+        </section>
+{% endblock %}
+{% block extra_2 %}{% endblock %}
