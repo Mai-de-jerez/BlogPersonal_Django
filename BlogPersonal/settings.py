@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-5ndc#d3jz-9y#du0j89^-jp*!m4n5jy(%uk&$sk=21v@^r%75#"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["may1985.pythonanywhere.com"]
 
 
 # Application definition
@@ -78,14 +81,15 @@ WSGI_APPLICATION = "BlogPersonal.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "itsy_db",
-        "USER": "root",
-        "PASSWORD": "Nemrac1985",
-        "HOST": "127.0.0.1",
-        "PORT": "3307",
+        "NAME": "May1985$itsy_db",  
+        "USER": "May1985",         
+        "PASSWORD": os.getenv("DB_PASSWORD"),  
+        "HOST": "May1985.mysql.pythonanywhere-services.com",
+        "PORT": "3306",
     }
 }
 
@@ -123,7 +127,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -166,4 +171,4 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'mainen1985@gmail.com'  
-EMAIL_HOST_PASSWORD = 'aliz hgza vdae mwke' 
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
